@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 follow-up · split the causes, keep the evidence'
 owner: support desk
-status: proposed
+status: reviewed
 reviewed: 2026-11-10
 signature: 'OpenCode · litellm/gpt-6.1-sol'
 ---
@@ -14,9 +14,12 @@ signature: 'OpenCode · litellm/gpt-6.1-sol'
   import FollowUpEvidence from '#lib/kb/FollowUpEvidence.svelte';
   import Callout from '#lib/kb/Callout.svelte';
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
+  import EngineeringUpdate from '#lib/kb/EngineeringUpdate.svelte';
 </script>
 
-## Finding
+<EngineeringUpdate />
+
+## Finding in the exported snapshot
 
 The [original incident page](/kb/incidents/4471) says one issue and one queued fix.
 The exported data and running components show distinct parser and form-hint mechanisms.
@@ -24,8 +27,9 @@ One merged ticket does not establish one root cause. The shared symptom is a wro
 the input path and correction differ.
 
 <Callout>
-This page proposes a split and a triage change. It does not say either bug is fixed, that the
-desk accepted the new policy, or that every unusual timing report has a proven root cause.
+The course accepted the two separate tickets. Engineering now reports the parser fixed and the
+hint won't fix because v3 was retired. The triage-policy replacement remains proposed;
+neither the status update nor ticket acceptance proves every unusual timing report's cause.
 </Callout>
 
 ## Counts and evidence
@@ -40,7 +44,10 @@ Their checked-in bodies are kept in the repository's `issues/` directory.
 
 <FollowUpEvidence />
 
-## Problem A: shared parser reads day-first dates month first
+## Problem A: shared parser reads day-first dates month first — fixed
+
+**Current disposition:** engineering reports `fix(dates): parse dd/mm for eu locales`.
+The following explains the historical mechanism and proposed validation, not a fix implemented in this repo.
 
 The tenant directory establishes the date convention. For day-first tenants, the shared parser
 treats a day/month input as month/day. The export assigns app and email reports, and reports from
@@ -61,7 +68,11 @@ for the tenant's contract. Reject impossible dates instead of silently coercing 
 input still works. Verify the stored booking and invite, not just the field display.
 These are proposed product tests; the export does not contain the production parser.
 
-## Problem B: booking-v3 hint tells people to type the opposite format
+## Problem B: booking-v3 hint tells people to type the opposite format — won't fix
+
+**Current disposition:** `booking-v3` was retired; engineering will not fix this form.
+Retirement is not evidence of a corrected hint. The following documents the historical defect
+and what an equivalent future form must get right.
 
 For a day-first tenant using `booking-v3`, the form prints `MM/DD/YYYY` but interprets its input
 using the tenant's day-first convention. Following the hint therefore swaps the intended date.
@@ -112,9 +123,11 @@ why subject matching fails; it does not diagnose symptoms that the model does no
 
 ## Ownership and follow-up
 
-Engineering should track each demonstrated mechanism separately, preserving the original merged
-ticket as evidence. Support should confirm the unresolved timing reports, review the proposed
-triage decision, and re-export whenever the desk changes tenant configuration or report filing.
-Do not label this snapshot as a current live count or close reports merely because a fix is queued.
+Track the two mechanisms separately, preserving the original merged ticket and its later closure
+as evidence. The GitHub parser tracker is closed as **completed** based on engineering's fixed disposition;
+the hint tracker is closed as **not planned** based on retirement, not as a delivered hint fix.
+Support should confirm the unresolved timing reports, review the proposed triage decision,
+and re-export whenever tenant configuration or report filing changes.
+Do not label this snapshot as a live count or claim independent verification of a production fix.
 
 <RenderStamp {signature} />

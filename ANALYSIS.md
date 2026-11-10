@@ -4,6 +4,19 @@ This repository preserves the course's support-KB export and adds a signed,
 evidence-based follow-up. This is fictional course data, not Allegro support data.
 It contains no login links, credentials, browser profile or email-agent files.
 
+## Later engineering disposition
+
+After the course accepted the two tickets, its challenge page revealed an
+engineering update: **#4471 closed 5 October 2026**. The parser is **fixed**
+(`fix(dates): parse dd/mm for eu locales`); the form hint is **won't fix**
+because `booking-v3` was retired. These are different outcomes. Retirement
+does not mean the hint was corrected, and this repo does not independently
+test the production parser fix. The unchanged ZIP did not contain this update.
+The source and exact status text are recorded in
+`src/lib/data/engineering-update.json` and rendered into the follow-up.
+GitHub issue #1 is closed as completed; #2 is closed as not planned, with
+explanatory comments linking those dispositions to the engineering update.
+
 ## Deliverables
 
 - New page: `src/routes/kb/incidents/4471-follow-up/+page.svx`.

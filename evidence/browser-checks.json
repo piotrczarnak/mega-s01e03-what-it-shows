@@ -4,6 +4,7 @@
     "HTTP 200 and local links resolve",
     "379 parser + 33 hint = 412 unique reports; 427 raw rows; 38 tag disagreements",
     "five unresolved report IDs visible",
+    "later engineering disposition visible: parser fixed, hint won't fix / v3 retired",
     "computed cause table and SVG timeline rendered",
     "hydrated explorer responds to tenant changes and ignores subject-only changes",
     "layout CSS applied",

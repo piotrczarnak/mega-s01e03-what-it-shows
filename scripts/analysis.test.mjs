@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { causeOf, dayFirst, sameCause, uniqueById } from '../src/lib/kb/causes.ts';
 import { analysis, raw, reports, tenants, tenantOf, notes } from './analyze.mjs';
@@ -51,4 +52,13 @@ test('one-day and timing reports remain visible without inventing a confirmed ca
   assert.equal(result.reviewNeeded.length, 5);
   assert.deepEqual(result.reviewNeeded.map((r) => r.id).sort(), [...notes.oneDayMove].sort());
   assert.ok(result.reviewNeeded.every((r) => r.deskCause === 'parser'));
+});
+
+test('later desk closure preserves fixed versus retired/wont-fix outcomes', () => {
+  const update = JSON.parse(readFileSync(new URL('../src/lib/data/engineering-update.json', import.meta.url), 'utf8'));
+  assert.equal(update.closedOn, '2026-10-05');
+  assert.equal(update.parser.status, 'fixed');
+  assert.equal(update.hint.status, "won't fix");
+  assert.equal(update.hint.message, 'booking-v3 form retired');
+  assert.equal(analysis().uniqueReports, 412);
 });

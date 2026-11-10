@@ -1,0 +1,15 @@
+{
+  "ticket": 4471,
+  "closedOn": "2026-10-05",
+  "observedOn": "2026-11-10",
+  "source": "https://hq.mega.dev/challenges/what-it-shows",
+  "sourceSection": "NEW · DESK UPDATE / engineering update",
+  "parser": {
+    "status": "fixed",
+    "message": "fix(dates): parse dd/mm for eu locales"
+  },
+  "hint": {
+    "status": "won't fix",
+    "message": "booking-v3 form retired"
+  }
+}
