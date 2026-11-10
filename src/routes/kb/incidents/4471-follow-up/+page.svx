@@ -1,0 +1,120 @@
+---
+layout: runbook
+title: '#4471 follow-up · split the causes, keep the evidence'
+owner: support desk
+status: proposed
+reviewed: 2026-11-10
+signature: 'OpenCode · litellm/gpt-6.1-sol'
+---
+
+<script>
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import QueueTimeline from '#lib/kb/QueueTimeline.svelte';
+  import DedupeExplorer from '#lib/kb/DedupeExplorer.svelte';
+  import FollowUpEvidence from '#lib/kb/FollowUpEvidence.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+## Finding
+
+The [original incident page](/kb/incidents/4471) says one issue and one queued fix.
+The exported data and running components show distinct parser and form-hint mechanisms.
+One merged ticket does not establish one root cause. The shared symptom is a wrong calendar date;
+the input path and correction differ.
+
+<Callout>
+This page proposes a split and a triage change. It does not say either bug is fixed, that the
+desk accepted the new policy, or that every unusual timing report has a proven root cause.
+</Callout>
+
+## Counts and evidence
+
+<CauseTable ticket={4471} />
+
+The table above comes from the export at render time. The majority cause owns the old desk ticket;
+the other row saying “no ticket of its own” describes the **exported desk state**, not our GitHub tracking.
+GitHub tracks the mechanisms separately: [parser issue #1](https://github.com/piotrczarnak/mega-s01e03-what-it-shows/issues/1)
+and [form-hint issue #2](https://github.com/piotrczarnak/mega-s01e03-what-it-shows/issues/2).
+Their checked-in bodies are kept in the repository's `issues/` directory.
+
+<FollowUpEvidence />
+
+## Problem A: shared parser reads day-first dates month first
+
+The tenant directory establishes the date convention. For day-first tenants, the shared parser
+treats a day/month input as month/day. The export assigns app and email reports, and reports from
+the older `booking-v2` form, to this parser mechanism. A `booking-v3` tenant using app or email
+still belongs here: the tenant's form version does not turn every channel into a form report.
+
+**Evidence:** `R-41200` (Harbour Dental, app, `en-GB`) describes 7 April becoming 4 July.
+`R-41248` (Long Table, form, `it-IT`, `booking-v2`) describes agreed 8 May appearing as 5 August.
+These swapped components are consistent with the parser path in `causes.ts`.
+The unusual reports in the review table remain a qualification on the grouped count.
+
+**Proposed correction:** parse using an explicit, validated input format aligned with the tenant,
+and retain an unambiguous internal representation. Do not use browser locale as a substitute
+for the tenant's contract. Reject impossible dates instead of silently coercing them.
+
+**Acceptance checks:** a day-first 07/04/2026 stays 7 April across app, email and `booking-v2`;
+13/04/2026 remains valid and impossible dates fail clearly. A month-first tenant's supported
+input still works. Verify the stored booking and invite, not just the field display.
+These are proposed product tests; the export does not contain the production parser.
+
+## Problem B: booking-v3 hint tells people to type the opposite format
+
+For a day-first tenant using `booking-v3`, the form prints `MM/DD/YYYY` but interprets its input
+using the tenant's day-first convention. Following the hint therefore swaps the intended date.
+This is a UI contract bug, not the same correction as fixing the shared month-first parser.
+
+**Evidence:** `R-41230` (Copper Studio, form, `es-ES`, `booking-v3`) describes intended 6 January
+appearing as 1 June, despite intake tagging it `parser`. `R-41241` (Alder Physio, form,
+`de-DE`, `booking-v3`) describes intended 6 August appearing as 8 June.
+The directory also places Pale Harbour on this version; its form reports belong to this mechanism.
+
+**Proposed correction:** derive the field hint, example, validation and parsing from one explicit
+date-format contract for that tenant. Do not change parsing to follow a misleading hard-coded hint.
+
+**Acceptance checks:** for a day-first tenant the v3 hint says `DD/MM/YYYY`, entering 06/01/2026
+books 6 January, and the stored booking and invite agree. Check all v3 tenant locales, plus v2
+and app/email regressions. A parser-only fix must not be accepted as proof that the hint is fixed.
+
+## What the timeline says
+
+<QueueTimeline ticket={4471} />
+
+Received time measures when a person reported a problem. Merged time measures the desk's later
+filing action. Reports were arriving before the large merge batch and continued afterwards;
+neither “known” nor “fix queued” proves that the problem stopped.
+The chart's default period belongs to the export. Re-export and extend it if later reports fall
+outside that window. This build cannot show reports not present in its source JSON.
+
+## How to triage the next report
+
+The [old triage page](/kb/triage/dedupe) and [accepted decision 0001](/kb/decisions/0001-dedupe-by-subject)
+merge on subject alone. Their review dates are old; the renderer marks them stale.
+An accepted document can still be contradicted by current evidence.
+Do not rewrite decision 0001: [proposed decision 0002](/kb/decisions/0002-dedupe-by-cause)
+records its replacement and still needs the desk's acceptance.
+
+1. Preserve the report ID and body; check for an existing copy of that **ID**.
+2. Look up the tenant's locale and form version. Browser locale and intake tags are clues, not authority.
+3. Establish the channel, original input, expected date and actual stored/invite date.
+4. Merge only when the mechanism and necessary correction match an existing issue.
+5. Same subject with a v3 form versus app/email can mean different causes. Different subjects
+   can describe the same cause. Unknown tenants or one-day/timing symptoms need investigation.
+6. Recompute counts from unique IDs and record the snapshot; check the desk again before finalizing.
+
+<DedupeExplorer />
+
+The explorer runs the exported cause rules, including the unknown-tenant case. It demonstrates
+why subject matching fails; it does not diagnose symptoms that the model does not represent.
+
+## Ownership and follow-up
+
+Engineering should track each demonstrated mechanism separately, preserving the original merged
+ticket as evidence. Support should confirm the unresolved timing reports, review the proposed
+triage decision, and re-export whenever the desk changes tenant configuration or report filing.
+Do not label this snapshot as a current live count or close reports merely because a fix is queued.
+
+<RenderStamp {signature} />

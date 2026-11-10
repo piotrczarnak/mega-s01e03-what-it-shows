@@ -1,0 +1,40 @@
+---
+layout: runbook
+title: '0002 · Propose deduplication by demonstrated cause'
+owner: support desk
+status: proposed
+reviewed: 2026-11-10
+signature: 'OpenCode · litellm/gpt-6.1-sol'
+---
+
+<script>
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+**Proposed:** 10 November 2026. **Proposer:** OpenCode, working with piotrczarnak.
+**Would supersede:** [decision 0001](/kb/decisions/0001-dedupe-by-subject), only after support-desk acceptance.
+
+## Context
+
+[#4471's follow-up](/kb/incidents/4471-follow-up) shows that matching subjects can hide different
+parser and form-hint mechanisms. Different subjects can describe one mechanism. Intake guesses
+also disagree with the cause derived from tenant configuration.
+
+## Proposed decision
+
+Deduplicate overlapping export rows by report ID. Merge distinct reports into one engineering
+issue only when their demonstrated cause and correction match, using tenant locale, channel,
+form version and reproduction evidence. Keep report IDs and individual evidence after merging.
+
+Do not infer cause from subject text, browser locale or intake tags alone. Investigate unknown
+tenants and timing symptoms rather than force them into a familiar bucket. Proposed or queued
+fixes do not establish resolution.
+
+## Consequences
+
+- Triage requires reading and tenant lookup instead of a subject-only shortcut.
+- Counts remain reproducible and can be recalculated when the desk changes.
+- An existing accepted record remains intact; this proposal becomes authoritative only if accepted.
+- The old rule remains historical evidence, not evidence that #4471 has one cause.
+
+<RenderStamp {signature} />

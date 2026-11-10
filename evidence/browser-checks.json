@@ -1,0 +1,18 @@
+{
+  "page": "/kb/incidents/4471-follow-up/",
+  "checks": [
+    "HTTP 200 and local links resolve",
+    "379 parser + 33 hint = 412 unique reports; 427 raw rows; 38 tag disagreements",
+    "five unresolved report IDs visible",
+    "computed cause table and SVG timeline rendered",
+    "hydrated explorer responds to tenant changes and ignores subject-only changes",
+    "layout CSS applied",
+    "signature-derived desk reference rendered",
+    "historical triage text preserved and stale banner visible",
+    "decision 0002 remains proposed and signed",
+    "no browser JavaScript exceptions"
+  ],
+  "deskReference": "desk ref DR-P5VR-WND9",
+  "artifact": "evidence/follow-up.png",
+  "mode": "Server-rendered export snapshot with hydrated interactive examples; not a live feed."
+}
