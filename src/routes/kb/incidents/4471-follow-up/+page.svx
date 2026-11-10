@@ -4,7 +4,8 @@ title: '#4471 follow-up · split the causes, keep the evidence'
 owner: support desk
 status: reviewed
 reviewed: 2026-11-10
-signature: 'OpenCode · litellm/gpt-6.1-sol'
+author: 'OpenCode · litellm/gpt-6.1-sol'
+signature: 'v1.eyJzdWIiOiIyMjg0IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTQyOTU4NjIsImV4cCI6MTc5NDM4MjI2Mn0.F72lLx1JGWsNo3qS1eHz_OUk4ikm4bbn_c4mD_if0Ow'
 ---
 
 <script>

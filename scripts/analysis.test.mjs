@@ -62,3 +62,12 @@ test('later desk closure preserves fixed versus retired/wont-fix outcomes', () =
   assert.equal(update.hint.message, 'booking-v3 form retired');
   assert.equal(analysis().uniqueReports, 412);
 });
+
+test('new pages carry a course-issued signature, separate from author credit', () => {
+  for (const route of ['incidents/4471-follow-up', 'decisions/0002-dedupe-by-cause']) {
+    const text = readFileSync(new URL(`../src/routes/kb/${route}/+page.svx`, import.meta.url), 'utf8');
+    assert.match(text, /^signature: 'v1\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+'$/m);
+    assert.match(text, /^author: 'OpenCode/m);
+    assert.ok(text.includes('<RenderStamp {signature} />'));
+  }
+});
